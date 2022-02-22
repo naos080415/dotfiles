@@ -1,0 +1,36 @@
+## カラースキーム関係
+[[plugins]]
+repo='dracula/vim'
+name='dracula'
+[[plugins]]
+repo='nanotech/jellybeans.vim'
+
+# 複数行コメント
+[[plugins]]
+repo = 'tyru/caw.vim'
+
+# vim-lsp
+[[plugins]]
+repo='prabirshrestha/asyncomplete.vim'
+[[plugins]]
+repo='prabirshrestha/vim-lsp'
+[[plugins]]
+repo='prabirshrestha/async.vim'
+[[plugins]]
+repo='prabirshrestha/asyncomplete-lsp.vim'
+[[plugins]]
+repo='mattn/vim-lsp-settings'
+# hook_add = '''
+# let g:lsp_diagnostics_enabled = 0 
+# '''
+
+[[plugins]]
+repo='preservim/nerdtree'
+
+## git関係
+# gitを編集履歴を左側に表示する
+[[plugins]]
+# gitでvimを使いやすくする
+[[plugins]]
+repo='tpope/vim-fugitive'
+

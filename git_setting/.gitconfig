@@ -1,0 +1,7 @@
+[user]
+	email = ???????@gmail.com
+	name = naos080415
+[core]
+	quotePath = false
+[credential]
+	helper = wincred

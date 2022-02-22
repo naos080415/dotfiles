@@ -1,0 +1,148 @@
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+export ZPLUG_HOME=/usr/local/opt/zplug
+
+source $ZPLUG_HOME/init.zsh
+
+# zsh plugin
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+# theme (https://github.com/sindresorhus/pure#zplug)　好みのスキーマをいれてくだされ。
+zplug "mafredri/zsh-async"
+zplug "sindresorhus/pure"
+# 構文のハイライト(https://github.com/zsh-users/zsh-syntax-highlighting)
+zplug "zsh-users/zsh-syntax-highlighting"
+# history関係
+zplug "zsh-users/zsh-history-substring-search"
+# タイプ補完
+zplug "zsh-users/zsh-autosuggestions"
+zplug "zsh-users/zsh-completions"
+
+# 他のzshと履歴を共有
+setopt share_history
+
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+
+# Then, source plugins and add commands to $PATH
+zplug load  # --verbose
+
+# if [ -d $HOME/tools ]
+# then
+#     PATH=$PATH:$HOME/tools; export PATH
+# fi
+# 
+
+# zcompile わずかに高速化するらしい
+if [ $DOTFILES/.zshrc -nt ~/.zshrc.zwc ]; then
+  zcompile ~/.zshrc
+fi
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias m='make'
+alias mt='make test'
+alias mc='make clean'
+alias github='ggrks github'
+alias runos='cd && cd edk2 && build && cd && ./osbook/devenv/run_qemu.sh edk2/Build/MikanLoaderX64/DEBUG_CLANGPDB/X64/Loader.efi'
+# GUI特論のコンパイルコマンド
+alias xgcc='gcc -Wall -I/usr/local/include -L/usr/local/lib -lX11'
+
+# Macで生成される.DS_Storeファイルを消去するコマンド
+alias delds='find . -name ".DS_Store" -type f -ls -delete'
+
+# ideコマンド
+alias ide="~/dotfiles/scripts/ide.sh"
+alias emacs='vim'
+
+# git
+export PATH="/usr/local/Cellar/git/2.5.0/bin:$PATH"
+
+export PATH="/usr/local/opt/python@3.8/bin:$PATH"
+export LDFLAGS="-L/usr/local/opt/python@3.8/lib"
+
+# python 仮想環境を起動
+source ${HOME}/.venv/bin/activate
+
+# Xserver を使うための設定
+# export IP="$(ifconfig en0 | grep inet | awk '$1=="inet" {print $2}')" 
+# open -a  XQuartz
+# xhost + $IP
+
+#----------- zsh history (https://qiita.com/syui/items/c1a1567b2b76051f50c4) -------------
+# 履歴ファイルの保存先
+export HISTFILE=${HOME}/.zsh_history
+# メモリに保存される履歴の件数
+export HISTSIZE=1000
+# 履歴ファイルに保存される履歴の件数
+export SAVEHIST=10000
+# 重複を記録しない
+setopt hist_ignore_dups
+# 開始と終了を記録
+setopt EXTENDED_HISTORY
+
+# --------------------------自作コマンド---------------------------------
+# manpageのカラー表示
+man() {
+    env LESS_TERMCAP_mb=$'\E[01;31m' \
+    LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+    LESS_TERMCAP_me=$'\E[0m' \
+    LESS_TERMCAP_se=$'\E[0m' \
+    LESS_TERMCAP_so=$'\E[38;5;246m' \
+    LESS_TERMCAP_ue=$'\E[0m' \
+    LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+    man "$@"
+}
+
+# ggrksコマンド・草
+ggrks() {
+  local a="/Applications"
+  local u="https://www.google.co.jp/search?q="
+  case $1 in
+    -c) shift; open "${u}${*// /+}" -a "${a}/Google Chrome.app";;
+    -f) shift; open "${u}${*// /+}" -a "${a}/Firefox.app";;
+    -s) shift; open "${u}${*// /+}" -a "${a}/Safari.app";;
+     *) open "${u}${*// /+}";;
+  esac
+}
+
+count-pdf() {
+    pdftotext $1
+    cat *.txt > all.txt
+    wc -m all.txt
+    rm -rf all.txt
+}
+
+# Finderで開いているものをターミナルで開く.
+cdf () {
+    target=`osascript -e 'tell application "Finder" to if (count of Finder windows) > 0 then get POSIX path of (target of front Finder window as text)'`
+    if [ "$target" != "" ]
+        then
+            cd "$target"
+            pwd
+        else
+            echo 'No Finder window found' >&2
+        fi
+}
+
+# ターミナルで開いているファイルをFinderで開く.
+f() {
+    open `pwd`
+}
+
+export PATH=/usr/local/opt/llvm/bin:$PATH
+export PATH=/usr/local/Cellar/dosfstools/4.2/sbin:$PATH
+export PATH="/usr/local/opt/binutils/bin:$PATH"
+export PATH="/usr/X11/bin:$PATH"
+
+export PATH="$HOME/.poetry/bin:$PATH"
+export PATH="/usr/local/opt/python@3.7/bin:$PATH"

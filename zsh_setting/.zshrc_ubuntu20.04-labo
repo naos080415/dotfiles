@@ -1,0 +1,105 @@
+# 実機の実験を行うときの環境
+source ~/.venv/bin/activate
+export PYTHONPATH=~/.venv/lib/python3.8/site-packages/
+# Rosの設定
+source /opt/ros/noetic/setup.zsh
+source ~/catkin_ws/devel/setup.zsh
+export ROS_MASTER_URI=http://192.168.12.160:11311
+# export ROS_HOSTNAME=localhost
+export ROS_IP=`hostname -I | cut -d' ' -f1`
+
+# Webotsの設定
+export WEBOTS_HOME=/usr/local/webots
+export PATH=${PATH}:${WEBOTS_HOME}
+export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/local/webots/lib/controller"
+
+# zplugの設定
+export ZPLUG_HOME=/usr/share/zplug
+source $ZPLUG_HOME/init.zsh
+
+# zsh plugin
+zplug 'zplug/zplug', hook-build:'zplug --self-manage'
+# theme (https://github.com/sindresorhus/pure#zplug)　好みのスキーマをいれてくだされ。
+zplug "mafredri/zsh-async"
+zplug "sindresorhus/pure"
+# 構文のハイライト(https://github.com/zsh-users/zsh-syntax-highlighting)
+zplug "zsh-users/zsh-syntax-highlighting"
+# history関係
+zplug "zsh-users/zsh-history-substring-search"
+# タイプ補完
+zplug "zsh-users/zsh-autosuggestions"
+zplug "zsh-users/zsh-completions"
+
+# 新規パッケージを入れたタイミングでコメントを削除する。
+# Install plugins if there are plugins that have not been installed
+if ! zplug check --verbose; then
+    printf "Install? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+
+# Then, source plugins and add commands to $PATH
+zplug load  # --verbose
+
+# if [ -d $HOME/tools ]
+# then
+#     PATH=$PATH:$HOME/tools; export PATH
+# fi
+
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+
+# zcompile わずかに高速化するらしい
+if [ $DOTFILES/.zshrc -nt ~/.zshrc.zwc ]; then
+  zcompile ~/.zshrc
+fi
+
+#----------- zsh history (https://qiita.com/syui/items/c1a1567b2b76051f50c4) -------------
+# 履歴ファイルの保存先
+export HISTFILE=${HOME}/.zsh_history
+# メモリに保存される履歴の件数
+export HISTSIZE=1000
+# 履歴ファイルに保存される履歴の件数
+export SAVEHIST=100000
+# 重複を記録しない
+setopt hist_ignore_dups
+# 開始と終了を記録
+setopt EXTENDED_HISTORY
+
+alias tblogs='tensorboard --logdir ~/webots_data/logs/SAC/'
+# --------------------------自作コマンド---------------------------------
+# manpageのカラー表示
+man() {
+    env LESS_TERMCAP_mb=$'\E[01;31m' \
+    LESS_TERMCAP_md=$'\E[01;38;5;74m' \
+    LESS_TERMCAP_me=$'\E[0m' \
+    LESS_TERMCAP_se=$'\E[0m' \
+    LESS_TERMCAP_so=$'\E[38;5;246m' \
+    LESS_TERMCAP_ue=$'\E[0m' \
+    LESS_TERMCAP_us=$'\E[04;38;5;146m' \
+    man "$@"
+}
+
+# どこでもcatkin_makeをするためのコマンド
+cm() {
+  pwd >> ./message.txt
+  current_pwd=`cat ./message.txt`
+  rm ./message.txt
+  cd ~/catkin_ws
+  catkin_make
+  cd ${current_pwd}
+}
+
+# ctrl + r の検索を便利にするツール
+function search-rostopic-by-percol(){
+        LBUFFER=$LBUFFER$(rostopic list | percol)
+        zle -R -c
+    }
+    zle -N search-rostopic-by-percol
+    bindkey '^[r' search-rostopic-by-percol
+# ------------------------------------------------------------------------
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
