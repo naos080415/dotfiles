@@ -67,6 +67,7 @@ alias emacs='vim'
 # git
 export PATH="/usr/local/Cellar/git/2.5.0/bin:$PATH"
 
+# export PATH="/usr/local/opt/python@3.7/bin:$PATH"
 export PATH="/usr/local/opt/python@3.8/bin:$PATH"
 export LDFLAGS="-L/usr/local/opt/python@3.8/lib"
 
@@ -144,5 +145,3 @@ export PATH=/usr/local/Cellar/dosfstools/4.2/sbin:$PATH
 export PATH="/usr/local/opt/binutils/bin:$PATH"
 export PATH="/usr/X11/bin:$PATH"
 
-export PATH="$HOME/.poetry/bin:$PATH"
-export PATH="/usr/local/opt/python@3.7/bin:$PATH"
