@@ -10,7 +10,7 @@ if &compatible
   set nocompatible               " be improved
 endif
 
-let s:dein_path = expand('~/.cache/dein1')
+let s:dein_path = expand('~/.cache/dein')
 let s:dein_repo_path = s:dein_path . '/repos/github.com/Shougo/dein.vim'
 
 if &runtimepath !~# '/dein.vim'

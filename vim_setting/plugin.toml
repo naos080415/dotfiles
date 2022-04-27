@@ -30,6 +30,11 @@
 [[plugins]]
     repo = 'preservim/nerdtree'
  
+
+ # Pythonの仮想環境 virtualenv内に入ったライブラリをvimで使えるようにする
+[[plugins]]
+    repo = 'jmcantrell/vim-virtualenv'
+
 ######## ステータスバーをいい感じにする
 # ステータスバーをいい感じにする(https://github.com/vim-airline/vim-airline)
 [[plugins]]
